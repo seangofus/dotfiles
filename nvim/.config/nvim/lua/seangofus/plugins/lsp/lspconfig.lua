@@ -176,6 +176,17 @@ return {
           },
         },
       },
+
+      lspconfig.eslint.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        settings = {
+          validate = 'on',
+          packageManager = 'npm',
+        },
+        root_dir = lspconfig.util.root_pattern('.eslintrc.js', '.eslintrc.json', 'package.json', '**/.eslintrc.json', '**/package.json'),
+        -- filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' },
+      },
     }
 
     -- Configure borderd for LspInfo ui

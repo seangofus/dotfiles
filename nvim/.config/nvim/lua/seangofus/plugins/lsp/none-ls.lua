@@ -18,7 +18,7 @@ return {
         'stylua', -- lua formatter
         'black', -- python formatter
         'pylint', -- python linter
-        'eslint_d', -- js linter
+        -- 'eslint', -- js linter
         'golangci-lint',
       },
     }
@@ -46,24 +46,19 @@ return {
         formatting.isort,
         formatting.black,
         diagnostics.pylint,
-        diagnostics.eslint_d.with { -- js/ts linter
-          condition = function(utils)
-            local eslintrc = vim.fn.glob('**.eslintrc*', false, true)
-            if not vim.tbl_isempty(eslintrc) then
-              return true
-            end
-            return false
-            -- Look for any ESLint config files in parent directories
-            -- return utils.root_has_file {
-            --   '.eslintrc.js',
-            --   '.eslintrc.cjs',
-            --   '.eslintrc.json',
-            --   '.eslintrc.yaml',
-            --   '.eslintrc.yml',
-            --   './src/.eslintrc.json',
-            -- }
-          end,
-        },
+        -- diagnostics.eslint_d.with { -- js/ts linter
+        --   condition = function(utils)
+        --     -- Look for any ESLint config files in parent directories
+        --     -- return utils.root_has_file {
+        --     --   '.eslintrc.js',
+        --     --   '.eslintrc.cjs',
+        --     --   '.eslintrc.json',
+        --     --   '.eslintrc.yaml',
+        --     --   '.eslintrc.yml',
+        --     --   './src/.eslintrc.json',
+        --     -- }
+        --   end,
+        -- },
       },
       -- configure format on save
       on_attach = function(current_client, bufnr)

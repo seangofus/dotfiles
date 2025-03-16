@@ -60,6 +60,13 @@ return {
       end,
       desc = 'Clear Breakpoints',
     },
+    {
+      '<leader>ds',
+      function()
+        require('dap').disconnect()
+      end,
+      desc = 'Terminate Debug Session',
+    },
   },
   config = function()
     require('dap-vscode-js').setup {
@@ -102,6 +109,15 @@ return {
           url = 'http://localhost:3000',
           webRoot = '${workspaceFolder}',
           userDataDir = '${workspaceFolder}/.vscode/vscode-chrome-debug-userdatadir',
+        },
+        {
+          name = '🪬 Next.js: debug server-side',
+          type = 'pwa-node',
+          request = 'attach',
+          cwd = '${workspaceFolder}',
+          port = 9232,
+          skipFiles = { '<node_internals>/**', 'node_modules/**' },
+          sourceMaps = true,
         },
       }
     end
