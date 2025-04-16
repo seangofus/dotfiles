@@ -8,19 +8,6 @@ return {
     'saadparwaiz1/cmp_luasnip', -- for autocompletion
     'rafamadriz/friendly-snippets', -- useful snippets
     'onsails/lspkind.nvim', -- vs-code like pictograms
-    {
-      'MattiasMTS/cmp-dbee',
-      dependencies = {
-        { 'kndndrj/nvim-dbee' },
-      },
-      ft = 'sql', -- optional but good to have
-      opts = {}, -- needed
-    },
-    opts = {
-      sources = {
-        { 'cmp-dbee' },
-      },
-    },
   },
   config = function()
     local cmp = require 'cmp'
@@ -42,8 +29,8 @@ return {
         end,
       },
       mapping = cmp.mapping.preset.insert {
-        ['<C-k>'] = cmp.mapping.select_prev_item(), -- previous suggestion
-        ['<C-j>'] = cmp.mapping.select_next_item(), -- next suggestion
+        ['<C-p>'] = cmp.mapping.select_prev_item(), -- previous suggestion
+        ['<C-n>'] = cmp.mapping.select_next_item(), -- next suggestion
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(), -- show completion suggestions
@@ -57,7 +44,6 @@ return {
         { name = 'path' }, -- file system paths
         { name = 'copilot' },
         { name = 'luasnip' }, -- snippets
-        { name = 'cmp-dbee' },
       },
       -- configure lspkind for vs-code like pictograms in completion menu
       formatting = {
@@ -70,7 +56,7 @@ return {
         },
       },
       window = {
-        completetion = cmp.config.window.bordered(),
+        completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
       },
     }

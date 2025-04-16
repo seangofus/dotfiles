@@ -82,6 +82,13 @@ return {
       on_attach = on_attach,
     }
 
+    -- lspconfig.marksman.setup {
+    --   capabilities = capabilities,
+    --   on_attach = on_attach,
+    --   filetypes = { 'markdown', 'markdown.mdx' },
+    --   cmd = { '/Users/sean.gofus/.local/share/nvim/mason/bin/marksman', 'server', '-v 5' },
+    -- }
+
     -- configure css server
     lspconfig['cssls'].setup {
       capabilities = capabilities,
