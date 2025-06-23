@@ -1,0 +1,9 @@
+theme = "nord"
+provider = "google"
+model = "gemini-2.5-pro"
+autoupdate = true
+
+keybinds.leader = "ctrl+x"
+keybinds.session_new = "<leader>n"
+keybinds.editor_open = "<leader>e"
+
