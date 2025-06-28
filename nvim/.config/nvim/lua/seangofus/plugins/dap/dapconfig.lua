@@ -81,7 +81,7 @@ return {
       executable = {
         command = 'node',
         -- 💀 Make sure to update this path to point to your installation
-        args = { '/Users/sean.gofus/.local/share/nvim/lazy/vscode-js-debug/dist/src/dapDebugServer.js', '${port}' },
+        args = { '/Users/sean.gofus/.local/share/nvim/lazy/vscode-js-debug/out/src/dapDebugServer.js', '${port}' },
       },
     }
 
