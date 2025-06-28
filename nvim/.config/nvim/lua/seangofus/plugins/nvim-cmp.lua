@@ -1,6 +1,6 @@
 return {
   'hrsh7th/nvim-cmp',
-  event = 'InsertEnter',
+  event = 'VeryLazy',
   dependencies = {
     'hrsh7th/cmp-buffer', -- source for text in buffer
     'hrsh7th/cmp-path', -- source for file system paths
@@ -29,8 +29,8 @@ return {
         end,
       },
       mapping = cmp.mapping.preset.insert {
-        ['<C-p>'] = cmp.mapping.select_prev_item(), -- previous suggestion
-        ['<C-n>'] = cmp.mapping.select_next_item(), -- next suggestion
+        ['<C-k>'] = cmp.mapping.select_prev_item(), -- previous suggestion
+        ['<C-j>'] = cmp.mapping.select_next_item(), -- next suggestion
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(), -- show completion suggestions
@@ -42,7 +42,6 @@ return {
         { name = 'nvim_lsp' },
         { name = 'buffer' }, -- text within current buffer
         { name = 'path' }, -- file system paths
-        { name = 'copilot' },
         { name = 'luasnip' }, -- snippets
       },
       -- configure lspkind for vs-code like pictograms in completion menu
@@ -60,5 +59,12 @@ return {
         documentation = cmp.config.window.bordered(),
       },
     }
+
+    cmp.setup.filetype('sql', {
+      sources = cmp.config.sources({
+        { name = 'vim-dadbod-completion' },
+        { name = 'buffer' },
+      }),
+    })
   end,
 }

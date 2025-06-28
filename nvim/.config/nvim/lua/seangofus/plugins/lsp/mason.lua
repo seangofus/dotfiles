@@ -48,13 +48,19 @@ return {
 
     mason_tool_installer.setup {
       ensure_installed = {
-        'prettier', -- prettier formatter
+        'prettierd', -- prettier formatter
         'stylua', -- lua formatter
         'isort', -- python formatter
         'black', -- python formatter
         'pylint', -- python linter
-        -- 'eslint', -- js linter
+        'eslint_d', -- js linter
         'tflint',
+        'golangci-lint',
+        'gofumpt',
+        'goimports',
+        'golines',
+        'js-debug-adapter',
+        'php-debug-adapter',
       },
     }
   end,
