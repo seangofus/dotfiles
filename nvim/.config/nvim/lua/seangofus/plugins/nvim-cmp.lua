@@ -40,6 +40,7 @@ return {
       -- sources for autocompletion
       sources = cmp.config.sources {
         { name = 'nvim_lsp', group_index = 1 },
+        { name = 'copilot', group_index = 2 },
         { name = 'buffer' }, -- text within current buffer
         { name = 'path' }, -- file system paths
         { name = 'luasnip' }, -- snippets
@@ -48,6 +49,7 @@ return {
       formatting = {
         expandable_indicator = true,
         format = lspkind.cmp_format {
+          symbol_map = { Copilot = '' },
           maxwidth = 50,
           ellipsis_char = '...',
           mode = 'symbol_text',
