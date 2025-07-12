@@ -183,7 +183,6 @@ return {
           },
         },
       },
-
     }
 
     lspconfig.eslint.setup {
@@ -195,13 +194,7 @@ return {
         packageManager = 'npm',
         workingDirectories = { { mode = 'auto' } },
       },
-      root_dir = lspconfig.util.root_pattern(
-        '.eslintrc.js',
-        '.eslintrc.cjs',
-        '.eslintrc.json',
-        '.eslintrc',
-        'package.json'
-      ),
+      root_dir = lspconfig.util.root_pattern('.eslintrc.js', '.eslintrc.cjs', '.eslintrc.json', '.eslintrc', 'package.json'),
     }
 
     -- Configure borderd for LspInfo ui
@@ -209,6 +202,11 @@ return {
 
     -- Configure diagostics border
     vim.diagnostic.config {
+      underline = true,
+      virtual_text = false,
+      signs = true,
+      update_in_insert = true,
+
       float = {
         border = 'rounded',
       },
