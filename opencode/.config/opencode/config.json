@@ -8,30 +8,29 @@
   },
   "autoupdate": true,
   "provider": {
-    "openrouter": {
-      "npm": "@openrouter/ai-sdk-provider",
-      "name": "OpenRouter",
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama",
       "options": {
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "devstral:24b": {
-          "name": "Devstral 24b",
-          "limit": { "context": 131072, "output": 1000000 },
-          "tools": true
-        },
-        "qwen3:8b-16k": {
-          "name": "Qwen 3",
-          "tools": true
+        "devstral:24b_16k": {
+          "name": "Devstral"
         }
       }
     },
-    "ollama": {
+    "docker": {
       "npm": "@ai-sdk/openai-compatible",
+      "name": "Docker Models",
       "options": {
-        "baseURL": "http://localhost:11434/v1"
+        "baseURL": "http://localhost:12434/engines/llama.cpp/v1"
       },
-      "models": {}
+      "models": {
+        "ai/qwen3:latest": {
+          "name": "Qwen3"
+        }
+      }
     }
   }
 }

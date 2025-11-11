@@ -11,4 +11,9 @@ return {
   'hrsh7th/cmp-cmdline',
   'zbirenbaum/copilot-cmp',
 
+  {
+    'davidmh/mdx.nvim',
+    config = true,
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+  },
 }
