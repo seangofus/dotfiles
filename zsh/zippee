@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Colors (disabled if output is piped)
+if [[ -t 1 ]]; then
+    GREEN='\033[0;32m'
+    CYAN='\033[0;36m'
+    RED='\033[0;31m'
+    BOLD='\033[1m'
+    RESET='\033[0m'
+else
+    GREEN=''
+    CYAN=''
+    RED=''
+    BOLD=''
+    RESET=''
+fi
+
+usage() {
+    echo -e "${BOLD}Usage:${RESET} zippee <command> [string]"
+    echo ""
+    echo -e "${CYAN}Commands:${RESET}"
+    echo "  compress    Compress a string (gzip + base64 encode)"
+    echo "  decompress  Decompress a base64-encoded gzipped string"
+    echo ""
+    echo "Input can be provided as an argument or via stdin."
+    echo ""
+    echo -e "${CYAN}Examples:${RESET}"
+    echo "  zippee compress \"hello world\""
+    echo "  echo \"hello world\" | zippee compress"
+    echo "  zippee decompress \"H4sIAAAAAAAAA8tIzcnJVyjPL8pJUQQAoxwpHAsAAAA=\""
+    exit 1
+}
+
+compress() {
+    local input="$1"
+    local result
+    result=$(printf '%s' "$input" | gzip | base64)
+    echo -e "${CYAN}Compressed:${RESET}"
+    echo -e "${GREEN}${result}${RESET}"
+}
+
+decompress() {
+    local input="$1"
+    local result
+    result=$(echo "$input" | base64 -d | gunzip 2>/dev/null)
+    if [[ $? -ne 0 ]]; then
+        echo -e "${RED}Error:${RESET} Failed to decompress. Invalid input." >&2
+        exit 1
+    fi
+    echo -e "${CYAN}Decompressed:${RESET}"
+    echo -e "${GREEN}${result}${RESET}"
+}
+
+# Check if command is provided
+if [[ -z "$1" ]]; then
+    usage
+fi
+
+command="$1"
+shift
+
+# Get input from argument or stdin
+if [[ -n "$1" ]]; then
+    input="$1"
+elif [[ ! -t 0 ]]; then
+    input=$(cat)
+else
+    echo -e "${RED}Error:${RESET} No input provided"
+    usage
+fi
+
+# Execute the appropriate command
+case "$command" in
+    compress)
+        compress "$input"
+        ;;
+    decompress)
+        decompress "$input"
+        ;;
+    *)
+        echo -e "${RED}Error:${RESET} Unknown command '$command'"
+        usage
+        ;;
+esac
