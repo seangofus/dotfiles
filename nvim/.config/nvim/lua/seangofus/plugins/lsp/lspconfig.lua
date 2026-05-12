@@ -2,75 +2,107 @@ return {
   'neovim/nvim-lspconfig',
   event = { 'BufReadPre', 'BufNewFile' },
   dependencies = {
-    'hrsh7th/cmp-nvim-lsp',
+    'saghen/blink.cmp',
     { 'antosha417/nvim-lsp-file-operations', config = true },
   },
   config = function()
-    -- import lspconfig plugin
-    -- import cmp-nvim-lsp plugin
-    local cmp_nvim_lsp = require 'cmp_nvim_lsp'
+    local keymap = vim.keymap
 
-    local keymap = vim.keymap -- for conciseness
-
-    local opts = { noremap = true, silent = true }
     local on_attach = function(_, bufnr)
-      opts.buffer = bufnr
-
-      -- set keybinds
-      opts.desc = 'Show LSP references'
-      keymap.set('n', 'gR', '<cmd>Telescope lsp_references<CR>', opts)
-      opts.desc = 'Go to declaration'
-      keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-      opts.desc = 'Show LSP definitions'
-      keymap.set('n', 'gd', '<cmd>Telescope lsp_definitions<CR>', opts)
-      opts.desc = 'Show LSP implementations'
-      keymap.set('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
-      opts.desc = 'Show LSP type definitions'
-      keymap.set('n', 'gt', '<cmd>Telescope lsp_type_definitions<CR>', opts)
-      opts.desc = 'See available code actions'
-      keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
-      opts.desc = 'Smart rename'
-      keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-      opts.desc = 'Show buffer diagnostics'
-      keymap.set('n', '<leader>D', '<cmd>Telescope diagnostics bufnr=0<CR>', opts)
-      opts.desc = 'Show line diagnostics'
-      keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
-      opts.desc = 'Go to previous diagnostic'
-      keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-      opts.desc = 'Go to next diagnostic'
-      keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-      opts.desc = 'Show documentation for what is under cursor'
-      keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-      opts.desc = 'Restart LSP'
-      keymap.set('n', '<leader>rs', ':LspRestart<CR>', opts)
+      keymap.set('n', 'gR', function()
+        Snacks.picker.lsp_references()
+      end, { desc = 'Show LSP references', buffer = bufnr })
+      keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration', buffer = bufnr })
+      keymap.set('n', 'gd', function()
+        Snacks.picker.lsp_definitions()
+      end, { desc = 'Show LSP definitions', buffer = bufnr })
+      keymap.set('n', 'gi', function()
+        Snacks.picker.lsp_implementations()
+      end, { desc = 'Show LSP implementations', buffer = bufnr })
+      keymap.set('n', 'gt', function()
+        Snacks.picker.lsp_type_definitions()
+      end, { desc = 'Show LSP type definitions', buffer = bufnr })
+      keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'See available code actions', buffer = bufnr })
+      keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Smart rename', buffer = bufnr })
+      keymap.set('n', '<leader>D', function()
+        Snacks.picker.diagnostics_buffer()
+      end, { desc = 'Show buffer diagnostics', buffer = bufnr })
+      keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show line diagnostics', buffer = bufnr })
+      keymap.set('n', '[d', function()
+        vim.diagnostic.jump { count = -1, float = true }
+      end, { desc = 'Go to previous diagnostic', buffer = bufnr })
+      keymap.set('n', ']d', function()
+        vim.diagnostic.jump { count = 1, float = true }
+      end, { desc = 'Go to next diagnostic', buffer = bufnr })
+      keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Show documentation', buffer = bufnr })
+      keymap.set('n', '<leader>rs', ':LspRestart<CR>', { desc = 'Restart LSP', buffer = bufnr })
     end
 
-    local capabilities = cmp_nvim_lsp.default_capabilities()
+    local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-    local signs = { Error = ' ', Warn = ' ', Hint = '󰠠 ', Info = ' ' }
-    for type, icon in pairs(signs) do
-      local hl = 'DiagnosticSign' .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
-    end
+    -- Diagnostic config (replaces deprecated vim.fn.sign_define)
+    vim.diagnostic.config {
+      underline = true,
+      virtual_text = false,
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = ' ',
+          [vim.diagnostic.severity.WARN] = ' ',
+          [vim.diagnostic.severity.HINT] = '󰠠 ',
+          [vim.diagnostic.severity.INFO] = ' ',
+        },
+      },
+      update_in_insert = true,
+      float = { border = 'rounded' },
+    }
 
+    -- LSP servers
     local servers = {
       html = {},
       ts_ls = {},
       cssls = {},
-      tailwindcss = {},
-      svelte = {
-        on_attach = function(client, bufnr)
-          on_attach(client, bufnr)
-          vim.api.nvim_create_autocmd('BufWritePost', {
-            pattern = { '*.js', '*.ts' },
-            callback = function(ctx)
-              if client.name == 'svelte' then
-                client.notify('$/onDidChangeTsOrJsFile', { uri = ctx.file })
-              end
-            end,
-          })
-        end,
+      tailwindcss = {
+        filetypes = {
+          'html',
+          'css',
+          'scss',
+          'sass',
+          'javascript',
+          'javascriptreact',
+          'typescript',
+          'typescriptreact',
+          'svelte',
+          'astro',
+          'vue',
+        },
+        root_dir = vim.fs.dirname(vim.fs.find({
+          'tailwind.config.js',
+          'tailwind.config.cjs',
+          'package.json',
+          '.git',
+        }, { upward = true })[1] or vim.uv.cwd()),
+        settings = {
+          tailwindCSS = {
+            validate = true,
+            includeLanguages = {
+              elixir = 'html-eex',
+              eelixir = 'html-eex',
+              heex = 'html-eex',
+            },
+            classAttributes = { 'class', 'className', 'class:list', 'classList', 'ngClass' },
+            lint = {
+              cssConflict = 'warning',
+              invalidApply = 'error',
+              invalidConfigPath = 'error',
+              invalidScreen = 'error',
+              invalidTailwindDirective = 'error',
+              invalidVariant = 'error',
+              recommendedVariantOrder = 'warning',
+            },
+          },
+        },
       },
+      svelte = {},
       prismals = {},
       graphql = {
         filetypes = { 'graphql', 'gql', 'svelte', 'typescriptreact', 'javascriptreact' },
@@ -107,6 +139,7 @@ return {
       },
     }
 
+    -- Setup all servers
     for name, config in pairs(servers) do
       config.capabilities = capabilities
       config.on_attach = config.on_attach or on_attach
@@ -114,22 +147,7 @@ return {
       vim.lsp.enable(name)
     end
 
-    -- Configure border for LspInfo ui
-    vim.lsp.config('*', {
-      ui = {
-        border = 'rounded',
-      },
-    })
-
-    -- Configure diagnostics border
-    vim.diagnostic.config {
-      underline = true,
-      virtual_text = false,
-      signs = true,
-      update_in_insert = true,
-      float = {
-        border = 'rounded',
-      },
-    }
+    -- LspInfo border
+    vim.lsp.config('*', { ui = { border = 'rounded' } })
   end,
 }

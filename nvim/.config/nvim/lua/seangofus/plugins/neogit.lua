@@ -1,14 +1,11 @@
 return {
   'NeogitOrg/neogit',
   dependencies = {
-    'nvim-lua/plenary.nvim', -- required
-    'nvim-telescope/telescope.nvim', -- optional
-    'sindrets/diffview.nvim', -- optional
-    'ibhagwan/fzf-lua', -- optional
+    'nvim-lua/plenary.nvim',
+    'sindrets/diffview.nvim',
   },
   config = function()
     local neogit = require 'neogit'
-    local keymap = vim.keymap
 
     neogit.setup {
       status = {
@@ -18,10 +15,10 @@ return {
         kind = 'vsplit',
       },
       integrations = {
-        telescope = true,
+        diffview = true,
       },
     }
 
-    keymap.set('n', '<leader>gt', "<cmd>lua require('neogit').open()<cr>", { desc = 'Open NeoGit' })
+    vim.keymap.set('n', '<leader>gt', "<cmd>lua require('neogit').open()<cr>", { desc = 'Open NeoGit' })
   end,
 }

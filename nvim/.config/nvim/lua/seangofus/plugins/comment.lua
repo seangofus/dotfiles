@@ -1,18 +1,17 @@
 return {
-  'numToStr/Comment.nvim',
+  'JoosepAlviste/nvim-ts-context-commentstring',
   event = { 'BufReadPre', 'BufNewFile' },
-  dependencies = {
-    'JoosepAlviste/nvim-ts-context-commentstring',
+  opts = {
+    enable_autocmd = false,
   },
-  config = function()
-    -- import comment plugin safely
-    local comment = require 'Comment'
+  config = function(_, opts)
+    require('ts_context_commentstring').setup(opts)
 
-    local ts_context_commentstring = require 'ts_context_commentstring.integrations.comment_nvim'
-    -- enable comment
-    comment.setup {
-      -- for commenting tsx and jsx files
-      pre_hook = ts_context_commentstring.create_pre_hook(),
-    }
+    -- Wire ts-context-commentstring into native gc/gcc commenting
+    local get_option = vim.filetype.get_option
+    vim.filetype.get_option = function(filetype, option)
+      return option == 'commentstring' and require('ts_context_commentstring.internal').calculate_commentstring()
+        or get_option(filetype, option)
+    end
   end,
 }
