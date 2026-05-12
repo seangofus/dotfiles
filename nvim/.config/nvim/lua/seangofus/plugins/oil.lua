@@ -20,6 +20,14 @@ return {
         },
         float = {
           max_width = 0.8,
+          border = 'rounded',
+          padding = 4,
+        },
+        confirmation = {
+          border = 'rounded',
+        },
+        progress = {
+          border = 'rounded',
         },
       }
 
