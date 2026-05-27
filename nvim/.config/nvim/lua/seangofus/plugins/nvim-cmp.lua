@@ -4,6 +4,7 @@ return {
   event = 'VeryLazy',
   dependencies = {
     'rafamadriz/friendly-snippets',
+    'zbirenbaum/copilot.lua',
     'giuxtaposition/blink-cmp-copilot',
   },
 
