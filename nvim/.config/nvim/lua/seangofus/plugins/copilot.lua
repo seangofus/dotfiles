@@ -11,6 +11,10 @@ return {
       -- GitHub"). Pin to the n-managed node at /usr/local/bin/node which
       -- is currently v22 LTS.
       copilot_node_command = '/usr/local/bin/node',
+      -- Pin the inline completion model. As of now, gpt-41-copilot is the only
+      -- model GitHub exposes with the "completion" scope (Claude/GPT-5/etc.
+      -- are chat/agent/inline-edit only). Pinning prevents silent drift.
+      copilot_model = 'gpt-41-copilot',
       filetypes = {
         markdown = true,
         yaml = true,
