@@ -29,7 +29,7 @@ return {
       graphql = { 'prettierd', 'prettier', stop_after_first = true },
       go = { 'gofumpt', 'goimports', 'golines' },
     },
-    format_on_save = { timeout_ms = 500, lsp_format = 'fallback' },
+    format_on_save = { timeout_ms = 2000, lsp_format = 'fallback' },
     formatters = {
       shfmt = {
         prepend_args = { '-i', '2' },
