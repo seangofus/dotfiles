@@ -5,7 +5,7 @@ return {
       cursor = {
         duration = 250,
         easing = 'ease-out',
-        enabled = true,
+        enabled = false,
       },
       scroll = {
         duration = 400,
@@ -14,7 +14,7 @@ return {
       },
       performance = { enabled = false },
       keymaps = {
-        cursor = true,
+        cursor = false,
         scroll = true,
       },
     }
