@@ -2,7 +2,6 @@ return {
   'mfussenegger/nvim-dap',
   dependencies = {
     'rcarriga/nvim-dap-ui',
-    'mxsdev/nvim-dap-vscode-js',
     'nvim-neotest/nvim-nio',
     -- build debugger from source
     {
@@ -69,24 +68,26 @@ return {
     },
   },
   config = function()
-    require('dap-vscode-js').setup {
-      debugger_path = vim.fn.stdpath 'data' .. '/lazy/vscode-js-debug',
-      adapters = { 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost', 'node', 'chrome' },
-    }
+    local dap = require 'dap'
 
-    require('dap').adapters['pwa-node'] = {
-      type = 'server',
-      host = 'localhost',
-      port = '${port}',
-      executable = {
-        command = 'node',
-        -- 💀 Make sure to update this path to point to your installation
-        args = { '/Users/sean.gofus/.local/share/nvim/lazy/vscode-js-debug/out/src/dapDebugServer.js', '${port}' },
-      },
-    }
+    -- vscode-js-debug adapters (registered directly, no wrapper plugin needed).
+    -- Each adapter type maps to the same dapDebugServer.js entry point built from
+    -- microsoft/vscode-js-debug (see the build step above).
+    local js_debug_path = vim.fn.stdpath 'data' .. '/lazy/vscode-js-debug/out/src/dapDebugServer.js'
+    for _, adapter in ipairs { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' } do
+      dap.adapters[adapter] = {
+        type = 'server',
+        host = 'localhost',
+        port = '${port}',
+        executable = {
+          command = 'node',
+          args = { js_debug_path, '${port}' },
+        },
+      }
+    end
 
     for _, language in ipairs { 'typescript', 'javascript', 'svelte', 'typescriptreact' } do
-      require('dap').configurations[language] = {
+      dap.configurations[language] = {
         {
           type = 'pwa-node',
           request = 'launch',
@@ -122,13 +123,13 @@ return {
       }
     end
 
-    require('dap').adapters.php = {
+    dap.adapters.php = {
       type = 'executable',
       command = 'node',
       args = { vim.fn.stdpath 'data' .. '/lazy/vscode-php-debug/out/phpDebug.js' },
     }
 
-    require('dap').configurations.php = {
+    dap.configurations.php = {
       {
         type = 'php',
         request = 'launch',
@@ -140,7 +141,8 @@ return {
       },
     }
 
-    require('dapui').setup {
+    local dapui = require 'dapui'
+    dapui.setup {
       icons = { expanded = '▾', collapsed = '▸' },
       expand_lines = vim.fn.has 'nvim-0.7',
       layouts = {
@@ -173,7 +175,6 @@ return {
         max_type_length = nil,
       },
     }
-    local dap, dapui = require 'dap', require 'dapui'
     dap.listeners.after.event_initialized['dapui_config'] = function()
       dapui.open { reset = true }
     end
@@ -184,7 +185,7 @@ return {
       dapui.close {}
     end
 
-    vim.keymap.set('n', '<leader>ui', require('dapui').toggle)
+    vim.keymap.set('n', '<leader>ui', dapui.toggle)
     vim.fn.sign_define('DapBreakpoint', { text = '☠️' })
   end,
 }
