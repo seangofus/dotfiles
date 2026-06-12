@@ -1,5 +1,9 @@
 return {
   'folke/noice.nvim',
+  -- Disabled to evaluate Nvim's native cmdline + snacks.notifier on their own.
+  -- To re-enable: delete the next line, then `:Lazy reload noice.nvim`.
+  -- If you decide to keep it disabled, remove this whole file in a follow-up.
+  enabled = false,
   event = 'VeryLazy',
   dependencies = {
     'MunifTanjim/nui.nvim',
