@@ -45,6 +45,56 @@ return {
     indent = { enabled = true }, -- replaces indent-blankline.nvim
     notifier = { enabled = true, timeout = 3000 }, -- replaces nvim-notify
     zen = {}, -- for zoom (replaces vim-maximizer)
+
+    -- ── Replaces alpha-nvim ─────────────────────────────────────────────
+    dashboard = {
+      enabled = true,
+      preset = {
+        header = table.concat({
+          '             ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
+          '             ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
+          '             ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
+          '             ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
+          '             ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
+          '             ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
+        }, '\n'),
+        keys = {
+          { icon = ' ', key = 'f', desc = 'Find File', action = function() Snacks.picker.files { cwd = project_root() } end },
+          { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
+          { icon = ' ', key = 'g', desc = 'Find Text', action = function() Snacks.picker.grep { cwd = project_root() } end },
+          { icon = ' ', key = 'r', desc = 'Recent Files', action = function() Snacks.picker.recent() end },
+          { icon = ' ', key = 'c', desc = 'Config', action = function() Snacks.picker.files { cwd = vim.fn.stdpath 'config' } end },
+          { icon = '󰒲 ', key = 'l', desc = 'Lazy', action = ':Lazy' },
+          { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
+        },
+      },
+      sections = {
+        { section = 'header' },
+        { section = 'keys', gap = 1, padding = 1 },
+        { section = 'startup' },
+      },
+    },
+
+    -- ── Replaces plugin/floaterminal.lua ────────────────────────────────
+    terminal = {
+      win = {
+        position = 'float',
+        border = 'rounded',
+        width = 0.8,
+        height = 0.8,
+      },
+    },
+
+    -- ── Replaces whisk.nvim ─────────────────────────────────────────────
+    scroll = {
+      animate = {
+        duration = { step = 15, total = 250 },
+        easing = 'outQuad',
+      },
+    },
+
+    -- Bonus: open file at cursor in browser (covers another git-blame.nvim use case).
+    gitbrowse = { enabled = true },
   },
   keys = {
     -- File finding (replaces telescope) -- always rooted at project root
@@ -56,11 +106,15 @@ return {
 
     -- Git
     { '<leader>gb', function() Snacks.picker.git_branches() end, desc = 'Navigate git branches' },
+    { '<leader>gB', function() Snacks.gitbrowse() end, desc = 'Open file in git browser' },
 
     -- Zoom (replaces vim-maximizer)
     { '<leader>sm', function() Snacks.zen.zoom() end, desc = 'Maximize/minimize a split' },
 
     -- Notifications
     { '<leader>un', function() Snacks.notifier.hide() end, desc = 'Dismiss all notifications' },
+
+    -- Floating terminal (replaces plugin/floaterminal.lua)
+    { '<space>tt', function() Snacks.terminal() end, mode = { 'n', 't' }, desc = 'Toggle floating terminal' },
   },
 }
