@@ -37,3 +37,21 @@ opt.splitbelow = true -- split horizontal window to the bottom
 
 -- turn off swapfile
 opt.swapfile = false
+
+-- ── Nvim 0.12 additions ────────────────────────────────────────────────────
+
+-- Global default border for floating windows. Nvim 0.12 lets us set this once
+-- here instead of plumbing `border = 'rounded'` through every plugin's window
+-- config (lspconfig.ui, mason ui, oil.float, dapui.floating, etc.).
+opt.winborder = 'rounded'
+
+-- Render the completion popup with a rounded border to match.
+opt.pumborder = 'rounded'
+
+-- Cap the popup-menu width so completion items with very long signatures don't
+-- explode the layout.
+opt.pummaxwidth = 80
+
+-- Add `popup` to completeopt so LSP completionItem/resolve previews appear
+-- alongside the popup menu when supported by the server.
+opt.completeopt:append 'popup'

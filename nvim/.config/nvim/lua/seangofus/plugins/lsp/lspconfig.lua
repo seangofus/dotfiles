@@ -8,7 +8,7 @@ return {
   config = function()
     local keymap = vim.keymap
 
-    local on_attach = function(_, bufnr)
+    local on_attach = function(client, bufnr)
       keymap.set('n', 'gR', function()
         Snacks.picker.lsp_references()
       end, { desc = 'Show LSP references', buffer = bufnr })
@@ -22,6 +22,10 @@ return {
       keymap.set('n', 'gt', function()
         Snacks.picker.lsp_type_definitions()
       end, { desc = 'Show LSP type definitions', buffer = bufnr })
+      -- Nvim 0.12 default mapping: keep `grt` working alongside our snacks-based `gt`.
+      keymap.set('n', 'grt', function()
+        Snacks.picker.lsp_type_definitions()
+      end, { desc = 'Show LSP type definitions (default 0.12 mapping)', buffer = bufnr })
       keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'See available code actions', buffer = bufnr })
       keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Smart rename', buffer = bufnr })
       keymap.set('n', '<leader>D', function()
@@ -36,6 +40,20 @@ return {
       end, { desc = 'Go to next diagnostic', buffer = bufnr })
       keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Show documentation', buffer = bufnr })
       keymap.set('n', '<leader>rs', ':LspRestart<CR>', { desc = 'Restart LSP', buffer = bufnr })
+
+      -- ── Nvim 0.12 capabilities (opt-in per client) ───────────────────────
+      -- Semantic tokens: richer, language-aware highlighting on top of treesitter.
+      if client and client:supports_method 'textDocument/semanticTokens' then
+        pcall(vim.lsp.semantic_tokens.enable, true, { bufnr = bufnr, client_id = client.id })
+      end
+      -- Document color: inline color swatches for tailwind/CSS color values.
+      if client and client:supports_method 'textDocument/documentColor' then
+        pcall(vim.lsp.document_color.enable, true, bufnr, { style = 'virtual' })
+      end
+      -- Inline completion (e.g., Copilot LSP). Harmless if no provider; skipped silently.
+      if client and client:supports_method 'textDocument/inlineCompletion' then
+        pcall(vim.lsp.inline_completion.enable, true, { bufnr = bufnr })
+      end
     end
 
     local capabilities = require('blink.cmp').get_lsp_capabilities()
@@ -118,13 +136,11 @@ return {
       lua_ls = {
         settings = {
           Lua = {
+            -- Workspace library setup is handled by folke/lazydev.nvim, which
+            -- adds and updates `workspace.library` on the fly based on which
+            -- plugins are required from your config files.
             diagnostics = { globals = { 'vim' } },
-            workspace = {
-              library = {
-                [vim.fn.expand '$VIMRUNTIME/lua'] = true,
-                [vim.fn.stdpath 'config' .. '/lua'] = true,
-              },
-            },
+            completion = { callSnippet = 'Replace' },
           },
         },
       },
