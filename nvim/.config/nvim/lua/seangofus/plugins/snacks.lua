@@ -46,35 +46,6 @@ return {
     notifier = { enabled = true, timeout = 3000 }, -- replaces nvim-notify
     zen = {}, -- for zoom (replaces vim-maximizer)
 
-    -- ── Replaces alpha-nvim ─────────────────────────────────────────────
-    dashboard = {
-      enabled = true,
-      preset = {
-        header = table.concat({
-          '             ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
-          '             ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
-          '             ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
-          '             ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
-          '             ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
-          '             ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
-        }, '\n'),
-        keys = {
-          { icon = ' ', key = 'f', desc = 'Find File', action = function() Snacks.picker.files { cwd = project_root() } end },
-          { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
-          { icon = ' ', key = 'g', desc = 'Find Text', action = function() Snacks.picker.grep { cwd = project_root() } end },
-          { icon = ' ', key = 'r', desc = 'Recent Files', action = function() Snacks.picker.recent() end },
-          { icon = ' ', key = 'c', desc = 'Config', action = function() Snacks.picker.files { cwd = vim.fn.stdpath 'config' } end },
-          { icon = '󰒲 ', key = 'l', desc = 'Lazy', action = ':Lazy' },
-          { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
-        },
-      },
-      sections = {
-        { section = 'header' },
-        { section = 'keys', gap = 1, padding = 1 },
-        { section = 'startup' },
-      },
-    },
-
     -- ── Replaces plugin/floaterminal.lua ────────────────────────────────
     terminal = {
       win = {
