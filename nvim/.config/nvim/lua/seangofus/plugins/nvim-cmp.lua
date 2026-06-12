@@ -32,7 +32,7 @@ return {
     },
 
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer', 'copilot' },
+      default = { 'lsp', 'path', 'snippets', 'buffer', 'copilot', 'lazydev' },
       per_filetype = {
         sql = { 'dadbod', 'buffer' },
       },
@@ -46,6 +46,12 @@ return {
         dadbod = {
           name = 'Dadbod',
           module = 'vim_dadbod_completion.blink',
+        },
+        lazydev = {
+          name = 'LazyDev',
+          module = 'lazydev.integrations.blink',
+          -- Outrank the LSP source so lazydev's typed entries win on ties.
+          score_offset = 100,
         },
       },
     },
