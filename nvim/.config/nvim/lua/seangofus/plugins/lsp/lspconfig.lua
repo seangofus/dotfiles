@@ -39,7 +39,15 @@ return {
         vim.diagnostic.jump { count = 1, float = true }
       end, { desc = 'Go to next diagnostic', buffer = bufnr })
       keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Show documentation', buffer = bufnr })
-      keymap.set('n', '<leader>rs', ':LspRestart<CR>', { desc = 'Restart LSP', buffer = bufnr })
+      keymap.set('n', '<leader>rs', function()
+        local clients = vim.lsp.get_clients({ bufnr = bufnr })
+        for _, client in ipairs(clients) do
+          client:stop()
+        end
+        vim.defer_fn(function()
+          vim.cmd('edit')
+        end, 100)
+      end, { desc = 'Restart LSP', buffer = bufnr })
 
       -- ── Nvim 0.12 capabilities (opt-in per client) ───────────────────────
       -- Semantic tokens: richer, language-aware highlighting on top of treesitter.
